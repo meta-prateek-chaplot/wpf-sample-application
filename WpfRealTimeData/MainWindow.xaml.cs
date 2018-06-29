@@ -1,41 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.ComponentModel;
+using System.Collections.ObjectModel;
+using System;
+using System.Windows.Threading;
 using System.Threading;
-
+using System.Threading.Tasks;
 
 namespace WpfRealTimeData
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        List<KeyValuePair<int, int>> MyValue = new List<KeyValuePair<int, int>>();
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        private ObservableCollection<KeyValuePair<int, int>> _value;
+        public ObservableCollection<KeyValuePair<int, int>> MyValues
+        {
+            get
+            {
+                if (_value == null)
+                {
+                    _value = new ObservableCollection<KeyValuePair<int, int>>();
+                }
+                return _value;
+            }
+            set
+            {
+                _value = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(MyValues)));
+            }
+        }
 
         public MainWindow()
         {
             InitializeComponent();
-            showChart();
+            lineChart.DataContext = MyValues;
         }
 
-        private void showChart()
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, 
+                    (ThreadStart) delegate
+                    {
+                        getValues();
+                    }
+                );
+        }
+
+        private void getValues()
         {
             Random r = new Random();
-            for(int i = 0; i < 20; i++)
+            
+            for(int i=0; i<10; i++)
             {
-                MyValue.Add(new KeyValuePair<int, int>(i, r.Next(25, 51)));
+                MyValues.Add(new KeyValuePair<int, int>(i, r.Next(25, 55)));
             }
-
-            lineChart.DataContext = MyValue;
         }
     }
 }

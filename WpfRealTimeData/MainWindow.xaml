@@ -17,5 +17,7 @@
             <TabItem Header="BIKE" Padding="10,5"></TabItem>
             <TabItem Header="TV" Padding="10,5"></TabItem>
         </TabControl>
+        <!-- Start Button to be removed -->
+        <Button Content="Start" Height="25" Width="45" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5,5,5,5" Click="Button_Click"/>
     </Grid>
 </Window>
